@@ -1,0 +1,18 @@
+function [NewResponse]=EvalMultiPolyRegress(reg,NewData) 
+%evaluate fit obtained with MultiPolyRegress
+%NewData is a (n x m) matrix, whit n datapoints, and m sets predictor data
+
+%Nico Burgelman, Mai 2018
+
+
+NewResponse=zeros(size(NewData(:,1)));
+for jj=1:length(NewData(:,1))
+    NewDataPoint=NewData(jj,:);
+    NewScores=repmat(NewDataPoint,[length(reg.PowerMatrix) 1]).^reg.PowerMatrix;
+    EvalScores=ones(length(reg.PowerMatrix),1);
+    for ii=1:size(reg.PowerMatrix,2)
+        EvalScores=EvalScores.*NewScores(:,ii);
+    end
+    NewResponse(jj)=reg.Coefficients'*EvalScores;
+end
+
